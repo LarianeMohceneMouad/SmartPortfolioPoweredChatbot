@@ -1,0 +1,9 @@
+@echo off
+echo Starting Portfolio Backend Server...
+cd /d "%~dp0backend"
+echo Installing dependencies...
+call npm install
+echo.
+echo Starting backend server on port 3001...
+call npm start
+pause

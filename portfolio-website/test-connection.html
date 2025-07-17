@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Backend Connection</title>
+</head>
+<body>
+    <h1>Backend Connection Test</h1>
+    <div id="result"></div>
+    
+    <script>
+        async function testConnection() {
+            const backendUrl = 'https://758e5e477ef7.ngrok-free.app';
+            const resultDiv = document.getElementById('result');
+            
+            try {
+                // Test health endpoint
+                console.log('Testing backend URL:', backendUrl);
+                const response = await fetch(`${backendUrl}/api/health`);
+                const data = await response.json();
+                
+                resultDiv.innerHTML = `
+                    <h2>✅ Backend Connection: SUCCESS</h2>
+                    <p><strong>Status:</strong> ${response.status}</p>
+                    <p><strong>Response:</strong> ${JSON.stringify(data, null, 2)}</p>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <h2>❌ Backend Connection: FAILED</h2>
+                    <p><strong>Error:</strong> ${error.message}</p>
+                    <p><strong>Backend URL:</strong> ${backendUrl}</p>
+                    <p>Make sure your backend server is running and ngrok tunnel is active!</p>
+                `;
+                console.error('Connection test failed:', error);
+            }
+        }
+        
+        // Run test when page loads
+        testConnection();
+    </script>
+</body>
+</html>

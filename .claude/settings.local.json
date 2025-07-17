@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mkdir:*)",
+      "Bash(npm install:*)",
+      "Bash(timeout 10 npm start)",
+      "Bash(find:*)",
+      "Bash(npm run dev:*)",
+      "Bash(winget search:*)",
+      "Bash(choco install:*)",
+      "Bash(winget install:*)",
+      "Bash(timeout 15 npm start)",
+      "Bash(curl:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(git config:*)",
+      "Bash(rm:*)"
+    ],
+    "deny": []
+  }
+}
