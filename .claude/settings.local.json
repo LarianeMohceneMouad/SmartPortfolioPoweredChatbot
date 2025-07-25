@@ -15,7 +15,9 @@
       "Bash(git commit:*)",
       "Bash(git push:*)",
       "Bash(git config:*)",
-      "Bash(rm:*)"
+      "Bash(rm:*)",
+      "Bash(ls:*)",
+      "Bash(chmod:*)"
     ],
     "deny": []
   }
