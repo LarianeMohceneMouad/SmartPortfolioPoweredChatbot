@@ -102,7 +102,7 @@ if [ -d "SmartPortfolioPoweredChatbot" ]; then
     rm -rf SmartPortfolioPoweredChatbot
 fi
 git clone $REPO_URL
-cd SmartPortfolioPoweredChatbot
+cd SmartPortfolioPoweredChatbot/portfolio-website
 
 # Setup backend
 echo -e "${YELLOW}🔧 Setting up backend...${NC}"
@@ -158,7 +158,7 @@ echo -e "${GREEN}✅ Frontend built successfully${NC}"
 
 # Create PM2 ecosystem file
 echo -e "${YELLOW}⚙️ Creating PM2 configuration...${NC}"
-cd ~/SmartPortfolioPoweredChatbot
+cd ~/SmartPortfolioPoweredChatbot/portfolio-website
 
 cat > ecosystem.config.js << EOF
 module.exports = {
@@ -314,7 +314,7 @@ cat > ~/deploy.sh << 'EOF'
 echo "🚀 Starting deployment..."
 
 # Navigate to project directory
-cd ~/SmartPortfolioPoweredChatbot
+cd ~/SmartPortfolioPoweredChatbot/portfolio-website
 
 # Pull latest changes
 git pull origin main
