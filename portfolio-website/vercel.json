@@ -1,0 +1,20 @@
+{
+  "version": 2,
+  "name": "portfolio-frontend",
+  "builds": [
+    {
+      "src": "frontend/package.json",
+      "use": "@vercel/next"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/frontend/$1"
+    }
+  ],
+  "env": {
+    "NEXT_PUBLIC_API_URL": "@next_public_api_url",
+    "NEXT_PUBLIC_CHAT_WEBHOOK_URL": "@next_public_chat_webhook_url"
+  }
+}
