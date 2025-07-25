@@ -1,7 +1,8 @@
 import { useEffect } from 'react'
 import '@n8n/chat/style.css'
+import NoSSR from './NoSSR'
 
-export default function ChatWidget() {
+function ChatWidgetContent() {
   const webhookUrl = process.env.NEXT_PUBLIC_CHAT_WEBHOOK_URL || 'YOUR_WEBHOOK_URL_HERE'
 
   useEffect(() => {
@@ -120,5 +121,13 @@ export default function ChatWidget() {
         }
       `}</style>
     </>
+  )
+}
+
+export default function ChatWidget() {
+  return (
+    <NoSSR fallback={<div></div>}>
+      <ChatWidgetContent />
+    </NoSSR>
   )
 }

@@ -1,0 +1,26 @@
+services:
+  - type: web
+    name: portfolio-backend
+    env: node
+    region: oregon
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    repo: https://github.com/LarianeMohceneMouad/SmartPortfolioPoweredChatbot.git
+    rootDir: backend
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: FRONTEND_URL
+        value: https://yourname.com
+      - key: N8N_WEBHOOK_URL
+        value: https://lmouud.app.n8n.cloud/webhook/c490c45a-1828-4ba9-84bc-3c36450218c7/chat
+
+databases:
+  - name: portfolio-db
+    databaseName: portfolio_db
+    user: postgres
+    region: oregon
+    plan: free

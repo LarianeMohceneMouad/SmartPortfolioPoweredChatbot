@@ -26,9 +26,7 @@ export default function Hero() {
             </span>
           </h2>
           <p className="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto mb-12 leading-relaxed animate-slide-in-up" style={{animationDelay: '0.6s'}}>
-            Leading end-to-end Generative AI solutions from concept to production on Azure. 
-            Specializing in Azure OpenAI, Machine Learning, and responsible AI practices with 
-            expertise in quantum computing and advanced data science.
+            Leading end-to-end Generative AI solutions from concept to production on Azure. Specializing in Azure OpenAI, Machine Learning, and responsible AI practices with expertise in quantum computing and advanced data science.
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12 animate-bounce-in" style={{animationDelay: '0.9s'}}>
