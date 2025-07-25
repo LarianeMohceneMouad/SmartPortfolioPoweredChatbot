@@ -75,10 +75,15 @@ if command -v nginx &> /dev/null; then
     sudo systemctl restart nginx 2>/dev/null || true
 fi
 
-# Clean npm cache
+# Clean npm cache and Next.js caches
 if command -v npm &> /dev/null; then
     npm cache clean --force 2>/dev/null || true
 fi
+
+# Clean Next.js and SWC caches
+rm -rf ~/.cache/next-swc 2>/dev/null || true
+rm -rf ~/.nextjs 2>/dev/null || true
+find ~ -name ".next" -type d -exec rm -rf {} + 2>/dev/null || true
 
 # Clean PostgreSQL database if it exists
 if command -v psql &> /dev/null; then
@@ -245,9 +250,34 @@ NEXT_PUBLIC_API_URL=https://$DOMAIN_NAME/api
 NEXT_PUBLIC_CHAT_WEBHOOK_URL=https://lmouud.app.n8n.cloud/webhook/c490c45a-1828-4ba9-84bc-3c36450218c7/chat
 EOF
 
-# Build frontend with memory optimization
+# Clean any existing build cache and SWC cache
+echo -e "${BLUE}Cleaning build cache...${NC}"
+rm -rf .next
+rm -rf ~/.cache/next-swc
+
+# Build frontend with memory optimization and retry logic
 echo -e "${YELLOW}🏗️ Building frontend (this may take 10-15 minutes)...${NC}"
-NODE_OPTIONS="--max-old-space-size=1024" npm run build
+
+# First attempt
+if ! NODE_OPTIONS="--max-old-space-size=1024" npm run build; then
+    echo -e "${YELLOW}⚠️ Build failed, cleaning cache and retrying...${NC}"
+    
+    # Clean everything and retry
+    rm -rf .next
+    rm -rf ~/.cache/next-swc
+    npm cache clean --force
+    
+    # Retry with different settings
+    echo -e "${BLUE}Retrying build without linting...${NC}"
+    if ! NODE_OPTIONS="--max-old-space-size=1024" npm run build -- --no-lint; then
+        echo -e "${YELLOW}⚠️ Second attempt failed, trying with minimal memory...${NC}"
+        
+        # Final attempt with basic settings
+        rm -rf node_modules .next
+        NODE_OPTIONS="--max-old-space-size=768" npm install --no-optional --silent
+        NODE_OPTIONS="--max-old-space-size=896" npm run build -- --no-lint
+    fi
+fi
 
 echo -e "${GREEN}✅ Frontend built successfully${NC}"
 
