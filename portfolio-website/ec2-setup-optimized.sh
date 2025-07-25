@@ -17,19 +17,92 @@ echo "================================================================="
 echo "This script is optimized for t2.micro instances with limited memory"
 echo
 
-# Function to prompt for user input
-prompt_input() {
-    local prompt="$1"
-    local variable="$2"
-    read -p "$prompt: " $variable
-}
+# Cleanup previous failed configurations
+echo -e "${YELLOW}🧹 Cleaning up previous failed configurations...${NC}"
 
-# Get configuration from user
-echo -e "${YELLOW}📋 Configuration Setup${NC}"
-prompt_input "Enter your domain name (e.g., yourdomain.com)" DOMAIN_NAME
-prompt_input "Enter your GitHub repository URL" REPO_URL
-prompt_input "Enter database password for portfolio_user" DB_PASSWORD
-prompt_input "Enter your email for SSL certificate" EMAIL
+# Stop and remove PM2 processes
+if command -v pm2 &> /dev/null; then
+    pm2 delete all 2>/dev/null || true
+    pm2 kill 2>/dev/null || true
+fi
+
+# Remove previous project directory
+if [ -d "~/SmartPortfolioPoweredChatbot" ]; then
+    rm -rf ~/SmartPortfolioPoweredChatbot
+fi
+
+# Remove previous nginx configuration
+if [ -f "/etc/nginx/sites-enabled/portfolio" ]; then
+    sudo rm -f /etc/nginx/sites-enabled/portfolio
+fi
+if [ -f "/etc/nginx/sites-available/portfolio" ]; then
+    sudo rm -f /etc/nginx/sites-available/portfolio
+fi
+
+# Remove previous deployment and monitoring scripts
+rm -f ~/deploy.sh
+rm -f ~/monitor.sh
+rm -f ~/ssl-check.sh
+
+# Reset nginx to default if it was modified
+if [ -f "/etc/nginx/sites-available/default.backup" ]; then
+    sudo cp /etc/nginx/sites-available/default.backup /etc/nginx/sites-available/default
+    sudo ln -sf /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
+else
+    # Restore default nginx config if it doesn't exist
+    if [ ! -f "/etc/nginx/sites-enabled/default" ]; then
+        sudo tee /etc/nginx/sites-available/default > /dev/null << 'NGINX_DEFAULT'
+server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
+
+    root /var/www/html;
+    index index.html index.htm index.nginx-debian.html;
+
+    server_name _;
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
+}
+NGINX_DEFAULT
+        sudo ln -sf /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
+    fi
+fi
+
+# Restart nginx to apply clean config
+if command -v nginx &> /dev/null; then
+    sudo systemctl restart nginx 2>/dev/null || true
+fi
+
+# Clean npm cache
+if command -v npm &> /dev/null; then
+    npm cache clean --force 2>/dev/null || true
+fi
+
+# Clean PostgreSQL database if it exists
+if command -v psql &> /dev/null; then
+    sudo -u postgres psql << 'PSQL_CLEANUP' 2>/dev/null || true
+DROP DATABASE IF EXISTS portfolio_db;
+DROP USER IF EXISTS portfolio_user;
+\q
+PSQL_CLEANUP
+fi
+
+echo -e "${GREEN}✅ Cleanup completed${NC}"
+echo
+
+# Pre-configured variables
+DOMAIN_NAME="larianemohcenemouad.site"
+REPO_URL="https://github.com/LarianeMohceneMouad/SmartPortfolioPoweredChatbot.git"
+DB_PASSWORD="25122000"
+EMAIL="mohcenemouadlariane@gmail.com"
+
+echo -e "${YELLOW}📋 Configuration${NC}"
+echo "Domain: $DOMAIN_NAME"
+echo "Repository: $REPO_URL"
+echo "Email: $EMAIL"
+echo
 
 echo
 echo -e "${BLUE}🔧 Starting system setup...${NC}"
